@@ -13,12 +13,12 @@ data class GitHubRepositoryItem(
     val owner: Owner,
     val id: Int,
     val description: String,
-    @Json(name = "html_url") val projectUrl: String,
-    @Json(name = "contributors_url") val contributorsUrl: String
+    @Json(name = "html_url") val html_url: String,
+    @Json(name = "contributors_url") val contributors_url: String
 
 )
 
 data class Owner(
     val login: String,
-    @Json(name = "avatar_url") val avatarUrl: String
+    @Json(name = "avatar_url") val avatar_url: String
 )

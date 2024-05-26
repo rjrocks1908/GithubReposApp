@@ -7,13 +7,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
+import com.haxon.githubreposapp.data.mapper.toGitHubRepositoryItem
+import com.haxon.githubreposapp.data.mapper.toPagingData
 import com.haxon.githubreposapp.domain.model.GitHubRepositoryItem
 import com.haxon.githubreposapp.domain.repository.RepoRepository
+import com.haxon.githubreposapp.util.GeneralResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,6 +49,10 @@ class RepoListingViewModel @Inject constructor(
                     repoRepository.insert15Repos(event.data)
                 }
             }
+
+            is RepoListingEvent.ShowCachedData -> {
+                getReposFromCache()
+            }
         }
     }
 
@@ -59,6 +68,29 @@ class RepoListingViewModel @Inject constructor(
                     _repoResponse.value = pagingData
                     state = state.copy(isLoading = false)
                 }
+
+        }
+    }
+
+    private fun getReposFromCache() {
+        viewModelScope.launch {
+            repoRepository.get15ReposFromCache().collectLatest {
+                when (it) {
+                    is GeneralResponse.Error -> {}
+                    is GeneralResponse.Loading -> {
+                        state = state.copy(isLoading = it.isLoading)
+                    }
+
+                    is GeneralResponse.Success -> {
+                        if (!it.data.isNullOrEmpty()) {
+                            it.data.toPagingData().collect { pagingData ->
+                                _repoResponse.value =
+                                    pagingData.map { data -> data.toGitHubRepositoryItem() }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

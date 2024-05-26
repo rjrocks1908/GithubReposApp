@@ -40,6 +40,7 @@ class RepoRepositoryImpl @Inject constructor(
             emit(GeneralResponse.Success(
                 data = localListing.map { it.toRepoListing() }
             ))
+            emit(GeneralResponse.Loading(false))
         }
     }
 

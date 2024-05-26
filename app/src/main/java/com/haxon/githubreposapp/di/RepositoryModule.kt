@@ -1,6 +1,8 @@
 package com.haxon.githubreposapp.di
 
+import com.haxon.githubreposapp.data.repository.ContributorRepositoryImpl
 import com.haxon.githubreposapp.data.repository.RepoRepositoryImpl
+import com.haxon.githubreposapp.domain.repository.ContributorRepository
 import com.haxon.githubreposapp.domain.repository.RepoRepository
 import dagger.Binds
 import dagger.Module
@@ -16,6 +18,12 @@ abstract class RepositoryModule {
     @Singleton
     abstract fun bindRepoRepository(
         repoRepositoryImpl: RepoRepositoryImpl
-    ) : RepoRepository
+    ): RepoRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindContributorRepository(
+        contributorRepositoryImpl: ContributorRepositoryImpl
+    ): ContributorRepository
 
 }

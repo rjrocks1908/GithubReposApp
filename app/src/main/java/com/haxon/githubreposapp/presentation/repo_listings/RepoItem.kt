@@ -37,11 +37,8 @@ fun RepoItem(
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
-
-                )
-
-
+                maxLines = 1
+            )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "(${repo.ownerName})",

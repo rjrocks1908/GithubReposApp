@@ -3,6 +3,7 @@ package com.haxon.githubreposapp.di
 import android.app.Application
 import androidx.room.Room
 import com.haxon.githubreposapp.data.local.RepoDatabase
+import com.haxon.githubreposapp.data.remote.ContributorApi
 import com.haxon.githubreposapp.data.remote.GithubApi
 import dagger.Module
 import dagger.Provides
@@ -25,6 +26,16 @@ object AppModule {
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create()
+    }
+
+    @Provides
+    @Singleton
+    fun providesContributorsApi(): ContributorApi {
+        return Retrofit.Builder()
+            .baseUrl(GithubApi.BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(ContributorApi::class.java)
     }
 
     @Provides

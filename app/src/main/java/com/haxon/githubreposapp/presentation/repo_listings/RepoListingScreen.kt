@@ -15,38 +15,42 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.haxon.githubreposapp.data.mapper.toRepoListing
+import com.haxon.githubreposapp.domain.model.RepoListing
 
 @Composable
 fun RepoListingScreen(
-    viewModel: RepoListingViewModel = hiltViewModel()
+    viewModel: RepoListingViewModel = hiltViewModel(),
+    onRepoClick: (RepoListing) -> Unit
 ) {
     val state = viewModel.state
     val response = viewModel.repoResponse.collectAsLazyPagingItems()
+    val context = LocalContext.current
 
-    LaunchedEffect(key1 = response) {
-        if (response.itemCount >= 15) {
-            viewModel.onEvent(
-                RepoListingEvent.CacheData(
-                    response.itemSnapshotList.items.take(15).map { it.toRepoListing() }
-                )
-            )
-        } else {
-            viewModel.onEvent(
-                RepoListingEvent.CacheData(
-                    response.itemSnapshotList.items.map { it.toRepoListing() }
-                )
-            )
-        }
-    }
+//    LaunchedEffect(key1 = response.itemCount) {
+//        Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+//        if (response.itemCount >= 15) {
+//            viewModel.onEvent(
+//                RepoListingEvent.CacheData(
+//                    response.itemSnapshotList.items.take(15).map { it.toRepoListing() }
+//                )
+//            )
+//        } else if (response.itemCount) {
+//            viewModel.onEvent(
+//                RepoListingEvent.CacheData(
+//                    response.itemSnapshotList.items.map { it.toRepoListing() }
+//                )
+//            )
+//        }
+//    }
 
     Column(
         modifier = Modifier
@@ -82,7 +86,7 @@ fun RepoListingScreen(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clickable {
-
+                                    onRepoClick(repo.toRepoListing())
                                 }
                                 .padding(16.dp)
                         )
@@ -116,6 +120,7 @@ fun RepoListingScreen(
 
                 when (val loadState = response.loadState.refresh) {
                     is LoadState.Error -> {
+//                        viewModel.onEvent(RepoListingEvent.ShowCachedData)
                         item {
                             ErrorItem(
                                 errorMessage = loadState.error.localizedMessage,
