@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.haxon.githubreposapp.presentation.repo_listings.RepoListingScreen
 
 @Composable
 fun AppNavigationGraph(modifier: Modifier = Modifier) {
@@ -12,7 +13,7 @@ fun AppNavigationGraph(modifier: Modifier = Modifier) {
 
     NavHost(navController = navController, startDestination = Routes.HOME) {
         composable(Routes.HOME) {
-
+            RepoListingScreen()
         }
         composable(Routes.REPO_INFO) {
 
